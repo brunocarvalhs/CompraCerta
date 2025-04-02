@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "72429094990",
+    "project_id": "compra-certa-f2eb7",
+    "storage_bucket": "compra-certa-f2eb7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72429094990:android:0a3e4ce7c04d52f6d1db1f",
+        "android_client_info": {
+          "package_name": "br.com.brunocarvalhs.compracerta"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqAfjqPpZm2maHwTjwz0zB0TGSo7TyAGE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
