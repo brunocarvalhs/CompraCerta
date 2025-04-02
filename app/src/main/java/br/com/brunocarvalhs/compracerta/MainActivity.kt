@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import br.com.brunocarvalhs.compracerta.commons.analytics.AnalyticsEvents
+import br.com.brunocarvalhs.compracerta.commons.analytics.AnalyticsParams
+import br.com.brunocarvalhs.compracerta.commons.analytics.AnalyticsProvider
 import br.com.brunocarvalhs.compracerta.commons.ui.theme.CompraCertaTheme
 import br.com.brunocarvalhs.compracerta.features.home.HomeInitialization
 import br.com.brunocarvalhs.compracerta.features.scanData.ScanDataInitialization
@@ -23,7 +26,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
+            val navController = rememberNavController().apply {
+                addOnDestinationChangedListener { _, destination, _ ->
+                    AnalyticsProvider().track(
+                        event = AnalyticsEvents.VISUALIZATION,
+                        params = mapOf(
+                            AnalyticsParams.SCREEN_NAME to destination.route.toString()
+                        )
+                    )
+                }
+            }
 
             CompraCertaTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

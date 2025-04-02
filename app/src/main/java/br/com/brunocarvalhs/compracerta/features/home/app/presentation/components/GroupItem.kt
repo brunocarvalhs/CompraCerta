@@ -36,12 +36,14 @@ fun GroupItem(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 4.dp)
-            .clickable { onSelectedChange(item) }.trackClick(
-                mapOf(
-                    AnalyticsParams.GROUP_ID to item.id.toString(),
-                    AnalyticsParams.GROUP_NAME to item.name,
+            .clickable {
+                onSelectedChange(item).trackClick(
+                    mapOf(
+                        AnalyticsParams.GROUP_ID to item.id.toString(),
+                        AnalyticsParams.GROUP_NAME to item.name,
+                    )
                 )
-            ),
+            },
         color = Color(0xFF1E1E1E),
         tonalElevation = 2.dp,
         shape = RoundedCornerShape(8.dp)
@@ -60,13 +62,14 @@ fun GroupItem(
                 )
             }
             Row {
-                IconButton(onClick = { onShare(item) }.trackClick(
-                    mapOf(
-                        AnalyticsParams.USER_ACTION to "share_group",
-                        AnalyticsParams.GROUP_ID to item.id.toString(),
-                        AnalyticsParams.GROUP_NAME to item.name,
-                    )
-                )) {
+                IconButton(onClick = { onShare(item) }
+                    .trackClick(
+                        mapOf(
+                            AnalyticsParams.USER_ACTION to "share_group",
+                            AnalyticsParams.GROUP_ID to item.id.toString(),
+                            AnalyticsParams.GROUP_NAME to item.name,
+                        )
+                    )) {
                     Icon(
                         imageVector = Icons.Filled.Share,
                         contentDescription = "Share",
@@ -74,13 +77,15 @@ fun GroupItem(
                     )
                 }
                 IconButton(
-                    onClick = { onDelete(item) }.trackClick(
-                        mapOf(
-                            AnalyticsParams.USER_ACTION to "delete_group",
-                            AnalyticsParams.GROUP_ID to item.id.toString(),
-                            AnalyticsParams.GROUP_NAME to item.name,
+                    onClick = { onDelete(item) }
+                        .trackClick(
+                            mapOf(
+                                AnalyticsParams.USER_ACTION to "delete_group",
+                                AnalyticsParams.GROUP_ID to item.id.toString(),
+                                AnalyticsParams.GROUP_NAME to item.name,
+                            )
                         )
-                    )) {
+                ) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
                         contentDescription = "Delete",

@@ -70,3 +70,10 @@ fun (() -> Unit).trackLongClick(
         this() // Executa a ação original
     }
 }
+
+fun Unit.trackClick(
+    params: Map<AnalyticsParams, String> = emptyMap(),
+): Unit {
+    analyticsProvider.track(AnalyticsEvents.CLICK, params)
+    Timber.d("Tracked click event: ${AnalyticsEvents.CLICK}, $params")
+}

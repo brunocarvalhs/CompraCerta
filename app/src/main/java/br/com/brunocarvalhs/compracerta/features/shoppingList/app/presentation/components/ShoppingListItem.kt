@@ -14,6 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
+import br.com.brunocarvalhs.compracerta.commons.analytics.AnalyticsParams
+import br.com.brunocarvalhs.compracerta.commons.extensions.trackClick
 import br.com.brunocarvalhs.compracerta.features.shoppingList.commons.extensions.sumPrice
 
 /**
@@ -55,9 +57,29 @@ internal fun ShoppingListItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = {
                     if (item.quantity > 1) {
-                        onQuantityDecrease()
+                        onQuantityDecrease.trackClick(
+                            mapOf(
+                                AnalyticsParams.SCREEN_NAME to "ShoppingList",
+                                AnalyticsParams.SCREEN_CLASS to "ShoppingListScreen",
+                                AnalyticsParams.USER_ACTION to "decrease_quantity",
+                                AnalyticsParams.PRODUCT_ID to item.id.toString(),
+                                AnalyticsParams.PRODUCT_NAME to item.name,
+                                AnalyticsParams.PRODUCT_PRICE to item.price.toString(),
+                                AnalyticsParams.PRODUCT_QUANTITY to item.quantity.toString()
+                            )
+                        ).invoke()
                     } else {
-                        onDelete()
+                        onDelete.trackClick(
+                            mapOf(
+                                AnalyticsParams.SCREEN_NAME to "ShoppingList",
+                                AnalyticsParams.SCREEN_CLASS to "ShoppingListScreen",
+                                AnalyticsParams.USER_ACTION to "delete_product",
+                                AnalyticsParams.PRODUCT_ID to item.id.toString(),
+                                AnalyticsParams.PRODUCT_NAME to item.name,
+                                AnalyticsParams.PRODUCT_PRICE to item.price.toString(),
+                                AnalyticsParams.PRODUCT_QUANTITY to item.quantity.toString()
+                            )
+                        ).invoke()
                     }
                 }) {
                     Icon(
@@ -71,7 +93,19 @@ internal fun ShoppingListItem(
                     color = Color.White,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
-                IconButton(onClick = onQuantityIncrease) {
+                IconButton(
+                    onClick = onQuantityIncrease.trackClick(
+                        mapOf(
+                            AnalyticsParams.SCREEN_NAME to "ShoppingList",
+                            AnalyticsParams.SCREEN_CLASS to "ShoppingListScreen",
+                            AnalyticsParams.USER_ACTION to "increase_quantity",
+                            AnalyticsParams.PRODUCT_ID to item.id.toString(),
+                            AnalyticsParams.PRODUCT_NAME to item.name,
+                            AnalyticsParams.PRODUCT_PRICE to item.price.toString(),
+                            AnalyticsParams.PRODUCT_QUANTITY to item.quantity.toString()
+                        )
+                    )
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = "Adicionar quantidade",

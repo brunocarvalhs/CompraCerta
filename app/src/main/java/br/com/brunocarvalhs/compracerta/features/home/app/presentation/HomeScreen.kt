@@ -35,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import br.com.brunocarvalhs.compracerta.commons.analytics.AnalyticsParams
 import br.com.brunocarvalhs.compracerta.commons.extensions.trackClick
+import br.com.brunocarvalhs.compracerta.commons.extensions.trackLayout
 import br.com.brunocarvalhs.compracerta.features.home.app.data.model.GroupModel
 import br.com.brunocarvalhs.compracerta.features.home.app.domain.model.Group
 import br.com.brunocarvalhs.compracerta.features.home.app.presentation.components.GroupItem
@@ -54,7 +55,12 @@ internal fun HomeScreen(
     }
 
     HomeContent(
-        modifier = modifier,
+        modifier = modifier.trackLayout(
+            mapOf(
+                AnalyticsParams.SCREEN_NAME to "Home",
+                AnalyticsParams.SCREEN_CLASS to "HomeScreen"
+            )
+        ),
         uiState = uiState,
         onIntent = viewModel::handleIntent,
         onNavigateToGroupDetails = { group ->
@@ -82,7 +88,13 @@ private fun HomeContent(
                             onNavigateToGroupDetails(group)
                         }
                     ))
-                },
+                }.trackClick(
+                    mapOf(
+                        AnalyticsParams.USER_ACTION to "create_group",
+                        AnalyticsParams.SCREEN_NAME to "Home",
+                        AnalyticsParams.SCREEN_CLASS to "HomeScreen"
+                    )
+                ),
                 content = {
                     Icon(Icons.Filled.Add, contentDescription = "Adicionar")
                 }

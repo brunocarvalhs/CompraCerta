@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import br.com.brunocarvalhs.compracerta.commons.analytics.AnalyticsParams
+import br.com.brunocarvalhs.compracerta.commons.extensions.trackClick
 
 @Composable
 internal fun TabRowComponent(
@@ -18,7 +20,12 @@ internal fun TabRowComponent(
         tabs.forEachIndexed { index, title ->
             Tab(
                 selected = selectedTabIndex == index,
-                onClick = { onTabSelected(index) },
+                onClick = { onTabSelected(index) }.trackClick(
+                    mapOf(
+                        AnalyticsParams.TAB_INDEX to index.toString(),
+                        AnalyticsParams.TAB_NAME to title
+                    )
+                ),
                 text = {
                     Text(
                         text = title,

@@ -16,13 +16,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import br.com.brunocarvalhs.compracerta.commons.analytics.AnalyticsParams
+import br.com.brunocarvalhs.compracerta.commons.extensions.trackClick
+import br.com.brunocarvalhs.compracerta.commons.extensions.trackLayout
 import br.com.brunocarvalhs.compracerta.features.shoppingList.app.data.model.ProductModel
 import br.com.brunocarvalhs.compracerta.features.shoppingList.app.domain.model.Product
 import br.com.brunocarvalhs.compracerta.features.shoppingList.app.presentation.components.ShoppingListItem
 import br.com.brunocarvalhs.compracerta.features.shoppingList.app.presentation.components.TabRowComponent
 import br.com.brunocarvalhs.compracerta.features.shoppingList.app.presentation.components.TopAppBarComponent
 import br.com.brunocarvalhs.compracerta.features.shoppingList.commons.extensions.sumPrice
-import br.com.brunocarvalhs.compracerta.features.shoppingList.commons.extensions.sumQuantity
 
 @Composable
 internal fun ShoppingListScreen(
@@ -41,11 +43,13 @@ internal fun ShoppingListScreen(
 
     LaunchedEffect(scannedPrice) {
         scannedPrice?.let { price ->
-            viewModel.handleIntent(ShoppingListIntent.AddItem(
-                groupId = groupId,
-                price = price,
-                quantity = 1
-            ))
+            viewModel.handleIntent(
+                ShoppingListIntent.AddItem(
+                    groupId = groupId,
+                    price = price,
+                    quantity = 1
+                )
+            )
             savedStateHandle.remove<String>(key = "price")
         }
     }
@@ -55,7 +59,13 @@ internal fun ShoppingListScreen(
     }
 
     ShoppingListContent(
-        modifier = modifier,
+        modifier = modifier.trackLayout(
+            mapOf(
+                AnalyticsParams.SCREEN_NAME to "ShoppingList",
+                AnalyticsParams.SCREEN_CLASS to "ShoppingListScreen",
+                AnalyticsParams.GROUP_ID to groupId.toString()
+            )
+        ),
         uiState = uiState,
         onIntent = viewModel::handleIntent,
         onAddItem = {
@@ -82,6 +92,13 @@ private fun ShoppingListContent(
         ShoppingListUiState.Loading -> {
             Box(
                 modifier = Modifier
+                    .trackLayout(
+                        mapOf(
+                            AnalyticsParams.SCREEN_NAME to "ShoppingList",
+                            AnalyticsParams.SCREEN_CLASS to "ShoppingListScreen",
+                            AnalyticsParams.USER_ACTION to "loading"
+                        )
+                    )
                     .fillMaxSize()
                     .background(Color.Black),
                 contentAlignment = Alignment.Center
@@ -89,9 +106,18 @@ private fun ShoppingListContent(
                 CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
         }
+
         is ShoppingListUiState.Error -> {
             Box(
                 modifier = Modifier
+                    .trackLayout(
+                        mapOf(
+                            AnalyticsParams.SCREEN_NAME to "ShoppingList",
+                            AnalyticsParams.SCREEN_CLASS to "ShoppingListScreen",
+                            AnalyticsParams.USER_ACTION to "error",
+                            AnalyticsParams.ERROR_MESSAGE to uiState.message
+                        )
+                    )
                     .fillMaxSize()
                     .background(Color.Black),
                 contentAlignment = Alignment.Center
@@ -102,9 +128,17 @@ private fun ShoppingListContent(
                 )
             }
         }
+
         is ShoppingListUiState.Success -> {
             ShoppingListSuccessLayout(
-                modifier = modifier,
+                modifier = modifier.trackLayout(
+                    mapOf(
+                        AnalyticsParams.SCREEN_NAME to "ShoppingList",
+                        AnalyticsParams.SCREEN_CLASS to "ShoppingListScreen",
+                        AnalyticsParams.GROUP_ID to uiState.items.toString(),
+                        AnalyticsParams.USER_ACTION to "success"
+                    )
+                ),
                 items = uiState.items,
                 onIntent = onIntent,
                 onAddItem = onAddItem,
@@ -121,7 +155,6 @@ private fun ShoppingListContent(
  * - Lista de itens
  * - Botão para adicionar novo item
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ShoppingListSuccessLayout(
     modifier: Modifier = Modifier,
@@ -144,7 +177,13 @@ private fun ShoppingListSuccessLayout(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 text = { Text("Add new item") },
-                onClick = onAddItem,
+                onClick = onAddItem.trackClick(
+                    mapOf(
+                        AnalyticsParams.USER_ACTION to "add_item",
+                        AnalyticsParams.SCREEN_NAME to "ShoppingList",
+                        AnalyticsParams.SCREEN_CLASS to "ShoppingListScreen"
+                    )
+                ),
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Add,
